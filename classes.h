@@ -25,6 +25,65 @@ unordered_map<char, int>  count_char(const string & file_name) {
     }
 }
 
+int key_file (const unordered_map<char, vector<int> > &code, const string &file_name, const char &last_char_length){
+    ofstream fkey (("key_" +file_name).c_str());
+    unordered_map<char, vector<int> >::const_iterator itr;
+    fkey << (int)last_char_length << endl;
+    for (itr = code.cbegin(); itr != code.cend(); ++itr) {
+        vector<int>::const_iterator iter;
+        for (iter = itr->second.cbegin(); iter != itr->second.cend(); ++iter) {
+            fkey<<(*iter);
+        }
+        fkey<<itr->first;
+        fkey<<endl;
+    }
+    fkey.close();
+    return 0;
+}
+
+
+int writing(const unordered_map<char, vector<int> > &code, const string & file_name) {
+    ifstream fin (file_name.c_str());
+    char buf_length = 0;
+    if (!fin.is_open()) {
+        my_exception exp(("File \""  + file_name +"\" was not found\n").c_str());
+        throw (exp);
+    } else {
+        ofstream fout (("zip_" + file_name ).c_str());
+        if (!fout.is_open()) {
+            my_exception exp(("File \""  + file_name +"\" was not found\n").c_str());
+            throw (exp);
+        } else {
+            char buf = 0;
+            char current_char;
+            vector <int> current_vector_code;
+            while (!fin.eof()) {
+                current_char = fin.get();
+                current_vector_code = code.find(current_char)->second;
+                for (int i = 0; i < current_vector_code.size(); ++i) {
+                    buf = buf * 2 + current_vector_code[i];
+                    ++buf_length;
+                    if (buf_length == 8) {
+                        fout<<buf;
+                        buf = 0;
+                        buf_length = 0;
+                    }
+                }
+            }
+            char buf_length_2 = buf_length;
+            if (buf_length_2 != 0) {
+                while (buf_length_2 != 8) {
+                    buf = buf * 2;
+                    ++buf_length_2;
+                }
+                fout<<buf;
+            }
+            fin.close();
+            fout.close();
+        }
+    }
+    return buf_length;
+}
 
 
 Huffman_tree::Huffman_tree(const unordered_map <char, int> & characters) {

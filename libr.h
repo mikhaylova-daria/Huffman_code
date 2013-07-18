@@ -11,6 +11,11 @@ using namespace std;
 
 unordered_map<char, int>  count_char(const string & file_name);
 
+int key_file (const unordered_map<char, vector<int> > &code, const string &file_name, const char &last_char_length);
+
+int writing(const unordered_map<char, vector<int> > &code, const string & file_name);
+
+
 class my_exception: public exception {
 private:
     string _what;
